@@ -1,12 +1,16 @@
-# The 5 PM Rains
+# Maryland Precipitation
 
-Data source: NOAA -National Centers for Environmental Information
-NCDC -> IPS ->Hourly Precipitation Data -> Maryland
+Data source: NOAA - National Centers for Environmental Information
 
-API:
-https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation
+The Hourly Precipitation Dataset was downloaded in three parts through this website:
+https://www.ncdc.noaa.gov/cdo-web/search?datasetid=PRECIP_HLY#
 
-https://www.ncdc.noaa.gov/IPS/hpd/hpd.html;jsessionid=0411CE5C15B689FA001C2C54CA0FA3B0?_page=0&jsessionid=0411CE5C15B689FA001C2C54CA0FA3B0&state=MD&_target1=Next+%3E
+The three parts spanned 1951-1970, 1970-1990, and 1990-2014, and were downloaded
+in sections to accommodate the size limit on the database downloader.
+
+The data downloaded were specific to Maryland for this analysis, but
+functionality should be maintained using data from other states.
+
 
 ## Repository Contents
 
