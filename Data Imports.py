@@ -12,17 +12,17 @@ os.chdir(wd)
 
 #%%
 
+state='Maryland'
+state='Florida'
+
 #Import the files from csv and concatinate 
 
-df_1950=pd.read_csv('1951-1970.csv')
-df_1970=pd.read_csv('1970-1990.csv')
-df_1990=pd.read_csv('1990-2014.csv')
+all_dfs=[pd.read_csv('./'+state+'/'+file) for file in os.listdir('./'+state)]
 
-
-df_raw=pd.concat([df_1950, df_1970,df_1990], ignore_index=True )
+df_raw=pd.concat(all_dfs, ignore_index=True )
 
 #These dataframes are fairly large, so delete when finished importing
-del df_1950, df_1970, df_1990
+del all_dfs
 
 #Look at our data
 df_raw.head(15)
@@ -136,13 +136,13 @@ def filter_min_station_duration(df_in, min_days=365):
     stations_to_drop=[]
     
     for station in df_in.Station.unique():
-        daily=df_raw[(df_in.Station==station)]
+        daily=df_in[(df_in.Station==station)]
         
         first_day=daily.Date.iloc[0]
         last_day=daily.Date.iloc[-1]
         
         delta=(last_day-first_day).days
-        if delta<365:
+        if delta<min_days:
             print(f'{station} - Open for {delta} days.')
             stations_to_drop.append(station)
             
@@ -156,11 +156,18 @@ df_raw=filter_min_station_duration(df_raw, min_days=365)
 
 #%%
 
+def gen_hours():
+    am=['12AM']+[str(i)+'AM' for i in range(1,12)]
+    pm=['12PM']+[str(i)+'PM' for i in range(1,12)]
+    return am+pm
+
+
+#%%
 
 def reshape_time(df_in):
     
     #These are the 24h in the day, to be column labels
-    hours=[str(i) for i in range(0,24)]
+    hours=gen_hours()
     
     #Catch the reformated dataframes
     pivoted_frames=[]
@@ -199,16 +206,45 @@ def reshape_time(df_in):
 #%%
 
 df_raw=reshape_time(df_raw)
+df_raw.head(20)
+#%%
+
+
+
+
 
 #%%
 
-df_raw.head(30)
+def add_time_indexes(df_in):
+    """
+    Add some columns to the dataframe to make parsing the dates easier
+    """
+    
+    #Add the new columns
+    df_in['Year']=pd.DatetimeIndex(df_in['Date']).year
+    df_in['Month']=pd.DatetimeIndex(df_in['Date']).month
+    df_in['Day']=pd.DatetimeIndex(df_in['Date']).day
+    
+    #Reorder the columns
+    cols=df_in.columns.to_list()
+    cols=cols[0:2]+cols[-3:]+cols[2:-3]
+    df_in=df_in[cols]
+
+
+    return df_in
+
+#%%
+df_raw=add_time_indexes(df_raw)
+
+
+
+
+
+
+#%%
 
 print(f'The original shape of the data was {original_shape}')
 print(f'The cleaned shape of the data was {df_raw.shape}')
-
-#%%
-
 
 state=df_raw.iloc[0,0]
 state=state[state.find(' US')-2 : state.find(' US')]
