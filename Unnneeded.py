@@ -177,3 +177,86 @@ metrics2["Intensity"]=metrics2["Volume"]/metrics2["Duration"]
 finish=time.perf_counter()
 
 print(f'Metrics 2 finished in {round(finish-start,2)} seconds')
+
+
+
+
+#%%
+
+
+
+
+def quick_rainfall_metrics_calc(df_in):
+    """
+    Takes the hourlty station data and returns the ranfall metrics:Volume, Duration and intensity for each occurance
+    """
+
+    
+    
+    all_rain=df_in.iloc[:,5:].copy()
+    tracking=df_in.iloc[:,0:5].copy()
+    
+    #Need to insert a row at the start to account for rain at the starting hour - otherwise the boolenas get flipped
+    all_rain.insert(loc=0, column='Start', value=0)
+    
+    #Binary rain-no rain
+    all_rain_binary=all_rain!=0
+    
+    #Make a copy, then shift columns by one
+    all_rain_binary_shift=all_rain_binary.copy()
+    
+    cols=all_rain.columns.to_list()
+    cols=cols[1:]+[cols[0]]
+    all_rain_binary_shift=all_rain_binary_shift[cols]
+    
+    #Set to arrays, then subtract the shifted array from the true array
+    #The result has the start and stop indexes for each rainfall.
+    #The -1 index is the last zero before the start(Don't count!), the 1 is an end (Count!)
+    rain_times=np.array(all_rain_binary).astype(int)-np.array(all_rain_binary_shift).astype(int)
+    
+    #Counts the number of times a rainfall occured
+    num_rainfalls=rain_times==-1
+    num_rainfalls=num_rainfalls.sum(axis=1)
+    
+    
+    
+    #Seperate out the times where it rained only once
+    #Can be processesd faster
+    
+    
+    start=time.perf_counter()
+    
+    one_rain_metrics=tracking.copy()
+    one_rain_metrics["Total_Volume"]=all_rain.sum(axis=1)
+    one_rain_metrics["Volume_per_Rain"]=one_rain_metrics["Total_Volume"]/num_rainfalls
+    one_rain_metrics["Total_Duration"]=(all_rain>0).sum(axis=1)
+    one_rain_metrics["Duration_per_Rain"]=one_rain_metrics["Total_Duration"]/num_rainfalls    
+    
+    metrics=one_rain_metrics.dropna()
+
+    
+    metrics=metrics.sort_values(['Station','Date']).reset_index(drop=True)
+    metrics["Total_Intensity"]=metrics["Total_Volume"]/metrics["Total_Duration"]
+    metrics["Intensity_per_Rain"]=metrics["Volume_per_Rain"]/metrics["Duration_per_Rain"]
+    
+    finish=time.perf_counter()
+    
+    print(f'Quick Metrics finished in {round(finish-start,2)} seconds')
+    
+    return metrics
+#%%
+
+x_quick=quick_rainfall_metrics_calc(df_consecutive)
+x_slow=rainfall_metrics_calc(df_consecutive)
+
+#%%
+
+
+for i in ["Duration" ,"Volume" ,"Intensity" ]:
+    plot_seasonal_metrics_stack(x_slow, column=i)
+    plot_seasonal_metrics_stack(x_quick, column=(i+'_per_Rain'))
+    
+for i in ["Duration" ,"Volume" ,"Intensity" ]:
+    stack_deltas(x_slow, column=i, season_interest='All', mode='All')
+    stack_deltas(x_quick, column=(i+'_per_Rain'), season_interest='All', mode='All')
+    

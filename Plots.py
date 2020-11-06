@@ -294,7 +294,7 @@ def rainfall_metrics_calc(df_in):
     return metrics
 
 
-
+x_metrics=rainfall_metrics_calc(df_consecutive)
 x_metrics=rainfall_metrics_calc(x)
 
 min_10_years_metrics=rainfall_metrics_calc(min_10_years)
@@ -363,6 +363,10 @@ for i in ["Duration" ,"Volume" ,"Intensity" ]:
     plot_seasonal_metrics_line(x_metrics, i, confidince=None )
 
 
+for i in ["Duration" ,"Volume" ,"Intensity" ]:
+    plot_seasonal_metrics_line(min_10_years_metrics, i )
+    plot_seasonal_metrics_line(min_10_years_metrics, i, confidince=None )
+
 
 #%%
 
@@ -400,6 +404,8 @@ def plot_seasonal_metrics_stack(df_in, column="Volume"):
 for i in ["Duration" ,"Volume" ,"Intensity" ]:
     plot_seasonal_metrics_stack(x_metrics, column=i)
 
+for i in ["Duration" ,"Volume" ,"Intensity" ]:
+    plot_seasonal_metrics_stack(min_10_years_metrics, column=i)
 
 #%%
 
@@ -422,8 +428,8 @@ def stack_deltas(df_in, column="Intensity", season_interest='All', mode='All'):
     #Determine the span of years where all stations can be covered
     if mode.lower()=='all':
         #Get the minimum of the max years and the max of the min year
-        max_year=df_in.groupby("Station").Year.max().min()
-        min_year=df_in.groupby("Station").Year.min().max()
+        min_year=df_in.groupby("Station").Year.max().min()
+        max_year=df_in.groupby("Station").Year.min().max()
     
     #Prepare a dataframe to capture the deltas
     df_plot=pd.DataFrame(columns=["Station",  "Season", 'Delta'])
@@ -526,17 +532,18 @@ for i in ["Duration" ,"Volume" ,"Intensity" ]:
 for i in ["Duration" ,"Volume" ,"Intensity" ]:
     stack_deltas(x_metrics, column=i, season_interest='All', mode='Individual')
     #stack_deltas(x_metrics, column=i, season_interest='Combined', mode='Individual')
+    
+    
+    
+for i in ["Duration" ,"Volume" ,"Intensity" ]:
+    stack_deltas(min_10_years_metrics, column=i, season_interest='All', mode='All')
+    #stack_deltas(x_metrics, column=i, season_interest='Combined', mode='All')
+    
+    
+for i in ["Duration" ,"Volume" ,"Intensity" ]:
+    stack_deltas(min_10_years_metrics, column=i, season_interest='All', mode='Individual')
+    #stack_deltas(x_metrics, column=i, season_interest='Combined', mode='Individual')
 #%%
-
-
-
-
-
-
-
-
-
-
 
 
 
