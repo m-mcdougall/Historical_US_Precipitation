@@ -1,24 +1,15 @@
 # Maryland Precipitation
 
-Data source: NOAA - National Centers for Environmental Information
 
-The Hourly Precipitation Dataset was downloaded in three parts through this website:
-https://www.ncdc.noaa.gov/cdo-web/search?datasetid=PRECIP_HLY#
+Precipitation data is sourced from the NOAA (National Oceanic and Atmospheric Administration) National Centers for Environmental Information, and downloaded using their Hourly Precipitation Data API.
 
-The three parts spanned 1951-1970, 1970-1990, and 1990-2014, and were downloaded
-in sections to accommodate the size limit on the database downloader.
-
-The data downloaded were specific to Maryland for this analysis, but
-functionality should be maintained using data from other states.
+Hourly Precipitation Data (HPD) Network, Version 2.0  
+NOAA National Centers for Environmental Information. [11-09-2020]  
 
 
-## Repository Contents
+To run this script, the only file needed is the station inventory, all other files will be iteratively downloaded using the API.  
+https://www.ncei.noaa.gov/data/coop-hourly-precipitation/v2/station-inventory/  
 
+Download file and place in the working directory.
 
-## Functions
-
-
-## Visualization
-
-
-## Future Analyses
+The full dataset can be accessed here: https://www.ncei.noaa.gov/data/coop-hourly-precipitation/v2/
