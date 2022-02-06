@@ -1,6 +1,6 @@
-# Precipitation Analysis : Historical and Contemporary Rainfall Patterns in the United States
+# Historical and Contemporary Rainfall Patterns in the United States
 
-[https://github.com/m-mcdougall/Maryland_Precipitation/blob/main/Precipitation%20Analysis.ipynb]
+[https://github.com/m-mcdougall/Historical_US_Precipitation/blob/main/Precipitation%20Analysis.ipynb]
 
 Precipitation data is sourced from the NOAA (National Oceanic and Atmospheric Administration) National Centers for Environmental Information, and downloaded using their Hourly Precipitation Data API.
 
